@@ -1,4 +1,4 @@
-node
+node['slaves']
 {
  def mavenHome = tool name: "maven 3.6.3"
  properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), pipelineTriggers([pollSCM('* * * * *')])])
