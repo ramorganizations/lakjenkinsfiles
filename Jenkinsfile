@@ -1,38 +1,35 @@
-node('slaves')
+node
 {
- def mavenHome = tool name: "maven 3.6.3"
- properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), pipelineTriggers([pollSCM('* * * * *')])])
-stage('CheckOutBuild')
+def mavenHome = tool name: "maven3.6.3"
+ properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '4', daysToKeepStr: '', numToKeepStr: '5')), parameters([choice(choices: ['master', 'development', 'qa ', 'uat'], description: '', name: 'BranchName')]), pipelineTriggers([pollSCM('* * * * *')])])
+
+stage('Getting code from GitHub')
 {
-git branch: 'development', credentialsId: 'b52e47f8-e9b1-47a8-b8b4-3931abd70f47', url: 'https://github.com/ramorganizations/maven-web-application.git'
+    git branch: 'development', credentialsId: '68635b32-2285-4317-9c23-7ed2e70ba9cb', url: 'https://github.com/ramorganizations/maven-web-application.git'
 }
 stage('Build')
 {
-    sh "${mavenHome}/bin/mvn clean package"
+  sh "${mavenHome}/bin/mvn clean package"  
 }
-/* 
-stage('ExecuteSonarQubeReport')
+stage('Execute SonarQube Report')
 {
     sh "${mavenHome}/bin/mvn sonar:sonar"
 }
-stage('BuildArtifactsReport')
+stage('Store Artifacts into nexus Repo')
 {
     sh "${mavenHome}/bin/mvn deploy"
 }
-stage('DeployAppintoTomcatServer')
+stage('Deploy Application into Tomcat Server')
 {
-sshagent(['c383e4e4-ecef-4292-b8cd-90e52411277c']) 
-{
-sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@100.25.163.228:/opt/apache-tomcat-9.0.37/webapps"
+    sshagent(['5eceb255-fd2b-448e-a1f2-73c292a2af7a']) {
+    sh " scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@35.175.135.250:/opt/apache-tomcat-9.0.37/webapps"
 }
 }
-stage('SendEmailNotifications')
+stage('Send Email Notification')
 {
-emailext body: '''build is done.
+    emailext body: '''build is successful..
 
-
-regards,
-lakshmi.''', subject: 'build done..', to: 'bhuludondet@gmail.com'
-}*/
-
+Regards,
+lakshmi.''', subject: 'build is successful', to: 'bhuludondeti@gmail.com'
+}
 }
