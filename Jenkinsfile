@@ -1,4 +1,4 @@
-node
+node('Walmart-node')
 {
 def mavenHome = tool name: "maven3.6.3"
  properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '4', daysToKeepStr: '', numToKeepStr: '5')), parameters([choice(choices: ['master', 'development', 'qa ', 'uat'], description: '', name: 'BranchName')]), pipelineTriggers([pollSCM('* * * * *')])])
