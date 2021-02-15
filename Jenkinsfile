@@ -1,4 +1,4 @@
-node
+node('flipcart_nodes')
 {
     def mavenHome = tool name: 'maven3.6.3'
     
