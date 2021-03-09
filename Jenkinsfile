@@ -1,39 +1,31 @@
-node
+node()
 {
-    def mavenHome = tool name: 'maven3.6.3'
-    
-    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('')])])
-    
-    stage('Checkout')
+    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([cron('* * * * *')])])
+    def mavenHome = tool name: "maven3.6.3"
+    stage("CheckOut")
     {
-      git branch: 'development', credentialsId: '8c619a76-32a1-45b7-af0e-cc3e03782886', url: 'https://github.com/ramorganizations/maven-web-application.git'
+        git branch: 'development', credentialsId: 'c7023370-b546-41c8-9a02-f72f784312e4', url: 'https://github.com/ramorganizations/maven-web-application.git'
     }
-    stage('Build')
+    stage("Build a Package")
     {
-       sh  "${mavenHome}/bin/mvn clean package"
+        sh "${mavenHome}/bin/mvn clean package"
     }
-    /*
-    stage('ExecuteSonarQubeReportReport')
+    /*stage("Generate SonarQubeReport")
     {
         sh "${mavenHome}/bin/mvn sonar:sonar"
     }
-    stage('storeAtrtifactsinto/nexus')
+    stage("Store Aritifacts into Nexus Repo")
     {
         sh "${mavenHome}/bin/mvn deploy"
     }
-    stage('DeployAppintoTomcatServer')
+    stage("Deploy into TomcatServer")
     {
-       sshagent(['914fb055-2fa8-426c-9b6f-e44b97feb22f']) {
-          sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@3.132.215.125:/opt/apache-tomcat-9.0.41/webapps"
-        }  
+        sshagent(['c4d09e25-1138-4c54-acfa-de553186eaa9']) {
+         sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@18.224.169.54:/opt/apache-tomcat-9.0.41/webapps"
+        }
     }
-    stage('SendEmail/notificstion')
-    {
-        emailext body: '''build is success
-
-
-        regards.
-        lak''', subject: 'build is success', to: 'bhulakshmidondeti@gmail.com'
+    stage("Send Email Notification")
+    { 
+        emailext body: 'Build is over..', subject: 'Build Info', to: 'bhulakshmidondeti'
     }*/
-    
 }
