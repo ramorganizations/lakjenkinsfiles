@@ -10,7 +10,7 @@ node
     {
         sh "${mavenHome}/bin/mvn clean package"
     }
-    /*stage('Generate SonarQube Report')
+    stage('Generate SonarQube Report')
     {
         sh "${mavenHome}/bin/mvn sonar:sonar"
     }
@@ -29,5 +29,5 @@ node
         emailext body: '''Build completed successfully.
         Regards,
         lakshmi.''', subject: 'About build', to: 'bhulakshmidondeti@gmail.com'
-    }*/
+    }
 }
