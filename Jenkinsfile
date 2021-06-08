@@ -1,31 +1,33 @@
-node()
+node
 {
     properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: '']])
-    def mavenHome = tool name: "maven3.6.3"
-    stage("CheckOut")
+    def mavenHome = tool name: "maven3.8.1"
+    stage('Checkout')
     {
-        git branch: 'development', credentialsId: 'c7023370-b546-41c8-9a02-f72f784312e4', url: 'https://github.com/ramorganizations/maven-web-application.git'
+        git branch: 'development', credentialsId: '26beb6b9-b6b7-452e-ada7-355d0bb08cc3', url: 'https://github.com/ramorganizations/maven-web-application.git'
     }
-    stage("Build a Package")
+    stage('Build a package')
     {
         sh "${mavenHome}/bin/mvn clean package"
     }
-    /*stage("Generate SonarQubeReport")
+    /*stage('Generate SonarQube Report')
     {
         sh "${mavenHome}/bin/mvn sonar:sonar"
     }
-    stage("Store Aritifacts into Nexus Repo")
+    stage('Store BuidArtifacts into nexus Repo')
     {
         sh "${mavenHome}/bin/mvn deploy"
     }
-    stage("Deploy into TomcatServer")
+    stage('Deploy into Tomcat Server')
     {
-        sshagent(['c4d09e25-1138-4c54-acfa-de553186eaa9']) {
-         sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@18.224.169.54:/opt/apache-tomcat-9.0.41/webapps"
-        }
+        sshagent(['9a1cb013-a4be-4870-ae7e-3013c0bd3a12']) {
+          sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.58.124.180:/opt/apache-tomcat-9.0.46/webapps/"
+       }
     }
-    stage("Send Email Notification")
-    { 
-        emailext body: 'Build is over..', subject: 'Build Info', to: 'bhulakshmidondeti'
+    stage('Send Email Notification')
+    {
+        emailext body: '''Build completed successfully.
+        Regards,
+        lakshmi.''', subject: 'About build', to: 'bhulakshmidondeti@gmail.com'
     }*/
 }
