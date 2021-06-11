@@ -1,4 +1,4 @@
-node
+node('walmart_node')
 {
     properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: '']])
     def mavenHome = tool name: "maven3.8.1"
